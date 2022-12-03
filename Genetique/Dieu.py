@@ -7,19 +7,28 @@ class Dieu :
         self.liste_solutions = []
         self.liste_next_generation = []
         self.nb_solutions = 100
-        self.score_min = 1
+        self.score_min = 149
         self.best_solution = None
+        self.current_generation = 0
+        self.generation_max = 10_000
         self.run()
 
     def run(self) : 
         self.initialize()
         index_score, score = self.anotherGeneration()
-        while score > self.score_min :
+        while score < self.score_min :
+            self.current_generation += 1
             self.calcul_score()
             self.selectionAndCroisement()
             self.mutation()
             self.goToNextGeneration()
-        print(self.liste_solutions)
+
+            index_score, score = self.anotherGeneration()
+
+            if self.current_generation >= self.generation_max :
+                break
+            print(self.current_generation)
+
         self.best_solution = self.liste_solutions[index_score]
 
 
@@ -33,6 +42,9 @@ class Dieu :
             pen = self.penality_function(sol)
 
             sol.score = fit - pen
+        
+        #Trier la liste des toutes les solutions dans l'ordre des meilleures
+        self.liste_solutions.sort(key= lambda sol: sol.score, reverse=True)
 
     def fitness_function (self, solution) :
         somme = 0
@@ -54,19 +66,20 @@ class Dieu :
             
         if len(self.liste_next_generation) != self.nb_solutions :
             print("Moins de solution dans la nouvelle génération")
+        
 
-        self.liste_solutions = self.liste_next_generation
-        self.liste_next_generation = []
 
     def selection(self) :
-        s1, s2 = randint(0,self.nb_solutions-1), randint(0,self.nb_solutions-1)
+        # Random
+        #s1, s2 = randint(0,self.nb_solutions-1), randint(0,self.nb_solutions-1)
+        
+        #selectionner parmi les meilleurs (minimum fenetre 5%)
+        borne_superieure = max(int((1-self.current_generation/self.generation_max)*self.nb_solutions), int(self.nb_solutions*0.05))
+        s1, s2 = randint(0,borne_superieure), randint(0,borne_superieure)
         return s1, s2
     
     def croisement(self,indexS1, indexS2) :
         pivot = randint(0, Solution.nb_attribut-1)
-        print("Index S1 S2 len solution",indexS1, indexS2, len(self.liste_solutions))
-        if len(self.liste_solutions) == 0 :
-            print(self.best_solution)
         attributs_1 = self.liste_solutions[indexS1].attributs[:pivot] + self.liste_solutions[indexS2].attributs[pivot:]
         attributs_2 = self.liste_solutions[indexS2].attributs[:pivot] + self.liste_solutions[indexS1].attributs[pivot:]
 
@@ -85,17 +98,17 @@ class Dieu :
                     self.liste_next_generation[i].attributs[j] = randint(0,Solution.max_attribut_borne[j])
     
     def goToNextGeneration(self):
-        self.liste_solutions = self.liste_next_generation
+        self.liste_solutions = list(self.liste_next_generation)
         self.liste_next_generation = []
 
     def anotherGeneration(self):
         scores = []
         for sol in self.liste_solutions: 
             scores.append(self.fitness_function(sol))
-        return scores.index(min(scores)), min(scores)
+        return scores.index(max(scores)), max(scores)
 
   
 if __name__ == "__main__" :
     d = Dieu()
-    print("La meilleure solution est", d.best_solution)
+    print("La meilleure solution est", d.best_solution.attributs)
     
