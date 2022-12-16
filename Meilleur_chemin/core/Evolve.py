@@ -48,7 +48,8 @@ class Evolve :
 
     def fitness_function (self, solution) :
         somme = 0
-        for i in range(1,len(self.liste_solutions)) : 
+        for i in range(1,len(solution.attributs)) : 
+            #print(solution.attributs[i])
             somme += self.graphe.matrice_distances[solution.attributs[i]][solution.attributs[i-1]]
         return somme 
     
@@ -104,7 +105,7 @@ class Evolve :
         for i in range(len(self.liste_next_generation)) :
             for j in range(len(self.liste_next_generation[i].attributs)) :
                 if random() <= Candidat.odd_to_mutate[j] :
-                    self.liste_next_generation[i].attributs[j] = randint(0,100)
+                    self.liste_next_generation[i].attributs[j] = randint(0,99)
     
     def goToNextGeneration(self):
         self.liste_solutions = self.liste_next_generation
