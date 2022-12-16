@@ -50,7 +50,7 @@ class Graphe :
                         #self.matrice_intermediaires[j][i] = k
     
     def getBestParcours ( self ) :
-        return best_parcours
+        return self.best_parcours
         
     def getBestParcoursRoutes ( self ) :
         liste_routes = []
