@@ -15,5 +15,9 @@ g = Graphe ( r, nb_villes )
 
 t = Evolve(g)
 
+t.best_solution
+g.best_parcours = t.best_solution.attributs
+print(t.best_solution.attributs)
+
 fenetre = MainWindow( r, g )
 fenetre.loop()
