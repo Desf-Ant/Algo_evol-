@@ -10,7 +10,7 @@ class Dieu :
         self.score_min = 149
         self.best_solution = None
         self.current_generation = 0
-        self.generation_max = 10_000
+        self.generation_max = 50_000
         self.run()
 
     def run(self) : 

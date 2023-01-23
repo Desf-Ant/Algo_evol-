@@ -2,6 +2,7 @@ from core.Region import *
 from core.Graphe import *
 from core.Evolve import *
 from gui.MainWindow import *
+import time
 
 w = 800
 h = 600
@@ -13,11 +14,14 @@ r = Region ( w, h, nb_villes )
 # Le graphe
 g = Graphe ( r, nb_villes )
 
-t = Evolve(g)
+start = time.time()
+e = Evolve(g)
 
-t.best_solution
-g.best_parcours = t.best_solution.attributs
-print(t.best_solution.attributs)
+print("Le temps pris :", time.time()-start)
+
+g.best_parcours = e.best_solution.attributs
+print(e.best_solution.attributs)
+print(e.best_score)
 
 fenetre = MainWindow( r, g )
 fenetre.loop()
